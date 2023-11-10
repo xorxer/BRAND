@@ -1,19 +1,46 @@
 using Godot;
 using System;
 
-public partial class player : CharacterBody2D
+public partial class Player : CharacterBody2D
 {
 	[Export]
-    public int Speed { get; set; } = 400;
+    public int Speed { get; set; } = 200;
 
-	public void GetInput() {
-		Vector2 inputDirection = Input.GetVector("left", "right", "up", "down");
-		Velocity = inputDirection * Speed;
-	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-		GetInput();
-		MoveAndSlide();
+		var playerDirection = Vector2.Zero; // The player's movement vector.
+
+		if (Input.IsActionPressed("right"))
+		{
+			playerDirection.X += 1;
+		}
+
+		if (Input.IsActionPressed("left"))
+		{
+			playerDirection.X -= 1;
+		}
+
+		if (Input.IsActionPressed("down"))
+		{
+			playerDirection.Y += 1;
+		}
+
+		if (Input.IsActionPressed("up"))
+		{
+			playerDirection.Y -= 1;
+		}		
+
+		if (playerDirection != Vector2.Zero)
+		{
+			playerDirection = playerDirection.Normalized() * Speed;
+			Velocity = playerDirection;
+			MoveAndSlide();
+			var animationTree = GetNode<AnimationTree>("AnimationTree");
+
+			animationTree.Set("parameters/", playerDirection);
+		}
+
+		
 	}
 }

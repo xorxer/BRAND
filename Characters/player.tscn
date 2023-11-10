@@ -1,10 +1,14 @@
-[gd_scene load_steps=14 format=3 uid="uid://jth442nek5e8"]
+[gd_scene load_steps=20 format=3 uid="uid://jth442nek5e8"]
 
-[ext_resource type="Script" path="res://Characters/player.cs" id="1_2rc82"]
 [ext_resource type="Texture2D" uid="uid://b54dtdly56ye1" path="res://Character sheets/Walking/character_walk_down.png" id="1_u8a8x"]
+[ext_resource type="Script" path="res://Characters/Player.cs" id="1_v21ax"]
 [ext_resource type="Texture2D" uid="uid://ejpmtiub8du" path="res://Character sheets/Walking/character_walk_downdiag.png" id="2_srpir"]
 [ext_resource type="Texture2D" uid="uid://bmxfonavd3xrs" path="res://Character sheets/Walking/character_walk_side.png" id="3_le7ry"]
 [ext_resource type="Texture2D" uid="uid://fk68sgjyr1bo" path="res://Character sheets/Walking/character_walk_up.png" id="4_i238c"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0yeik"]
+radius = 6.0
+height = 20.0
 
 [sub_resource type="Animation" id="Animation_lwm5f"]
 length = 0.001
@@ -253,23 +257,53 @@ _data = {
 "walk_updiag": SubResource("Animation_xn6i8")
 }
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0yeik"]
-radius = 6.0
-height = 20.0
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_c4ucs"]
+animation = &"walk_side"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_dtrtm"]
+animation = &"walk_side"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qktsp"]
+animation = &"walk_down"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_p2v60"]
+animation = &"walk_up"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_exsjb"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_c4ucs")
+blend_point_0/pos = Vector2(-1, 0)
+blend_point_1/node = SubResource("AnimationNodeAnimation_dtrtm")
+blend_point_1/pos = Vector2(1, 0)
+blend_point_2/node = SubResource("AnimationNodeAnimation_qktsp")
+blend_point_2/pos = Vector2(0, 1)
+blend_point_3/node = SubResource("AnimationNodeAnimation_p2v60")
+blend_point_3/pos = Vector2(0, -1)
+blend_mode = 1
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_bypfq"]
+states/Move/node = SubResource("AnimationNodeBlendSpace2D_exsjb")
+states/Move/position = Vector2(458, 98)
 
 [node name="Player" type="CharacterBody2D"]
 motion_mode = 1
-script = ExtResource("1_2rc82")
+script = ExtResource("1_v21ax")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 1)
+shape = SubResource("CapsuleShape2D_0yeik")
 
 [node name="Body" type="Sprite2D" parent="."]
-texture = ExtResource("1_u8a8x")
+texture = ExtResource("3_le7ry")
 hframes = 6
+frame = 2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_jd8l3")
 }
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1, 0)
-shape = SubResource("CapsuleShape2D_0yeik")
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeStateMachine_bypfq")
+anim_player = NodePath("../AnimationPlayer")
+active = true
+parameters/Move/blend_position = Vector2(-0.0609058, 0.0513346)
