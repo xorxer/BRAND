@@ -1,10 +1,11 @@
-[gd_scene load_steps=20 format=3 uid="uid://jth442nek5e8"]
+[gd_scene load_steps=26 format=3 uid="uid://jth442nek5e8"]
 
 [ext_resource type="Texture2D" uid="uid://b54dtdly56ye1" path="res://Character sheets/Walking/character_walk_down.png" id="1_u8a8x"]
 [ext_resource type="Script" path="res://Characters/Player.cs" id="1_v21ax"]
 [ext_resource type="Texture2D" uid="uid://ejpmtiub8du" path="res://Character sheets/Walking/character_walk_downdiag.png" id="2_srpir"]
 [ext_resource type="Texture2D" uid="uid://bmxfonavd3xrs" path="res://Character sheets/Walking/character_walk_side.png" id="3_le7ry"]
 [ext_resource type="Texture2D" uid="uid://fk68sgjyr1bo" path="res://Character sheets/Walking/character_walk_up.png" id="4_i238c"]
+[ext_resource type="Texture2D" uid="uid://dlijl3g1xnd4q" path="res://Character sheets/Walking/character_walk_updiag.png" id="6_u44fj"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0yeik"]
 radius = 6.0
@@ -246,6 +247,18 @@ tracks/1/keys = {
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Body:texture")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("6_u44fj")]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_jd8l3"]
 _data = {
@@ -269,6 +282,18 @@ animation = &"walk_down"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_p2v60"]
 animation = &"walk_up"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rk4xq"]
+animation = &"walk_downdiag"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_h5hfg"]
+animation = &"walk_downdiag"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_04bfg"]
+animation = &"walk_updiag"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_cml45"]
+animation = &"walk_updiag"
+
 [sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_exsjb"]
 blend_point_0/node = SubResource("AnimationNodeAnimation_c4ucs")
 blend_point_0/pos = Vector2(-1, 0)
@@ -278,11 +303,25 @@ blend_point_2/node = SubResource("AnimationNodeAnimation_qktsp")
 blend_point_2/pos = Vector2(0, 1)
 blend_point_3/node = SubResource("AnimationNodeAnimation_p2v60")
 blend_point_3/pos = Vector2(0, -1)
+blend_point_4/node = SubResource("AnimationNodeAnimation_rk4xq")
+blend_point_4/pos = Vector2(-0.75, 0.75)
+blend_point_5/node = SubResource("AnimationNodeAnimation_h5hfg")
+blend_point_5/pos = Vector2(0.75, 0.75)
+blend_point_6/node = SubResource("AnimationNodeAnimation_04bfg")
+blend_point_6/pos = Vector2(-0.75, -0.75)
+blend_point_7/node = SubResource("AnimationNodeAnimation_cml45")
+blend_point_7/pos = Vector2(0.75, -0.75)
+snap = Vector2(0.12, 0.1)
 blend_mode = 1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8psnq"]
+advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_bypfq"]
 states/Move/node = SubResource("AnimationNodeBlendSpace2D_exsjb")
-states/Move/position = Vector2(458, 98)
+states/Move/position = Vector2(527, 126)
+states/Start/position = Vector2(269, 126)
+transitions = ["Start", "Move", SubResource("AnimationNodeStateMachineTransition_8psnq")]
 
 [node name="Player" type="CharacterBody2D"]
 motion_mode = 1
@@ -293,9 +332,8 @@ position = Vector2(0, 1)
 shape = SubResource("CapsuleShape2D_0yeik")
 
 [node name="Body" type="Sprite2D" parent="."]
-texture = ExtResource("3_le7ry")
+texture = ExtResource("1_u8a8x")
 hframes = 6
-frame = 2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -306,4 +344,4 @@ libraries = {
 tree_root = SubResource("AnimationNodeStateMachine_bypfq")
 anim_player = NodePath("../AnimationPlayer")
 active = true
-parameters/Move/blend_position = Vector2(-0.0609058, 0.0513346)
+parameters/Move/blend_position = Vector2(0.00364399, 0.190965)
