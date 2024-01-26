@@ -12,4 +12,8 @@ public partial class Menu : Control
 	public override void _Process(double delta)
 	{
 	}
+
+	public void OnStartButtonPressed() {
+		GetTree().ChangeSceneToFile("res://Scenes/Game.tscn");
+	}
 }
